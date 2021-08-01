@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    zookeeper:
+      connect-string: localhost:2181
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/users
+    username: root
+    password: root
+  application:
+    name: users
+server:
+  port: 9010

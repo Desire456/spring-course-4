@@ -1,0 +1,41 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9991,localhost:9992,localhost:9993
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      group-id: consumer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      max-poll-records: 1
+      properties:
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            use:
+              type:
+                headers: false
+            value:
+              default:
+                type: com.example.data.data.Payload
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    listener:
+      ack-mode: manual_immediate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/payments
+    username: root
+    password: root
+  cloud:
+    zookeeper:
+      connect-string: localhost:2181
+  application:
+    name: data
+server:
+  port: 0
+
