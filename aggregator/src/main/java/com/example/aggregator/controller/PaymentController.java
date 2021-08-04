@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController()
@@ -22,20 +24,15 @@ public class PaymentController {
     @GetMapping
     public List<Payment> getPayments() {
         List<Payment> paymentList = dataClient.getAllPayments();
-        List<UserDto> userDtoList = userClient.createUsers(
-                paymentList.stream()
-                        .map(Payment::getSenderId)
-                        .collect(Collectors.toList())
-        );
+
+        Map<Long, String> usernamesById = new HashMap<>();
+        List<UserDto> userDtoList = userClient.getUsers(
+                paymentList.stream().map(Payment::getSenderId).collect(Collectors.toList()));
+        userDtoList.forEach(userDto ->
+                usernamesById.put(userDto.getId(), userDto.getName()));
+
         paymentList.forEach(payment ->
-                payment.setUsername(
-                        userDtoList.stream()
-                                .filter(user -> user.getName().equals(payment.getUsername()))
-                                .findFirst()
-                                .map(UserDto::getName)
-                                .orElse("")
-                )
-        );
+                payment.setUsername(usernamesById.getOrDefault(payment.getSenderId(), "")));
 
         return paymentList;
     }

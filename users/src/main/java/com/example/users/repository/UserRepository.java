@@ -3,6 +3,8 @@ package com.example.users.repository;
 import com.example.users.data.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    boolean existsById(Long id);
+    List<UserEntity> findAllByIdIn(List<Long> ids);
 }
